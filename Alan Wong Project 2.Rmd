@@ -1,0 +1,133 @@
+---
+title: "Alan Wong Project 2"
+author: "Alan Wong"
+date: "2023-03-20"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#library
+```{r}
+library(e1071)
+library(caret)
+library(neuralnet)
+library(nnet)
+library(cluster)
+library(factoextra)
+library(magrittr)
+library(dplyr)
+```
+
+#Load data
+```{r}
+data(BreastCancer)
+```
+
+#Data Prep
+```{r}
+BreastCancer = na.omit(BreastCancer) 
+BreastCancer$Id = NULL 
+
+```
+
+
+```{r}
+head(BreastCancer)
+summary(BreastCancer)
+```
+
+#Create Training and Testing
+```{r}
+train.rows <- sample(rownames(BreastCancer), dim(BreastCancer)[1]*0.8)
+train <- BreastCancer[train.rows, ]
+testing.rows <- sample(setdiff(rownames(BreastCancer), train.rows))
+testing <- BreastCancer[testing.rows, ]
+```
+
+#Neural Network
+```{r}
+nn <- nnet(Class ~ ., train, size=1)
+
+```
+#Neural Network Predictions
+```{r}
+nn.pred <- predict(nn,testing,type="class")
+table(nn.pred,testing$Class)
+```
+
+
+#Naive Bayes
+```{r}
+nb <- NaiveBayes(Class ~ ., BreastCancer)
+
+```
+
+```{r}
+nb.pred <- predict(mynb,testing)
+table(mynb.pred$class,iris$Species)
+```
+
+```{r}
+
+```
+
+```{r}
+#Decision trees
+library(rpart)
+mytree <- rpart(Species ~ ., iris)
+plot(mytree); text(mytree) # in "iris_tree.ps"
+summary(mytree)
+mytree.pred <- predict(mytree,iris,type="class")
+table(mytree.pred,iris$Species)
+# mytree.pred  setosa versicolor virginica
+#   setosa     50      0          0
+#   versicolor  0     47          1
+#   virginica   0      3         49
+
+```
+
+```{r}
+library(e1071)
+mysvm <- svm(Species ~ ., iris)
+mysvm.pred <- predict(mysvm, iris)
+table(mysvm.pred,iris$Species)
+# mysvm.pred   setosa versicolor virginica
+#   setosa     50      0          0
+#   versicolor  0     48          2
+#   virginica   0      2         48
+
+
+```
+
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
