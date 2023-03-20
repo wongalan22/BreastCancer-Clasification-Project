@@ -1,0 +1,104 @@
+---
+title: "Alan Wong Project 2"
+author: "Alan Wong"
+date: "2023-03-20"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#library
+```{r}
+require(mlbench)
+library(e1071)
+library(neuralnet)
+library(nnet)
+library(cluster)
+library(magrittr)
+```
+
+#Load data
+```{r}
+data(BreastCancer)
+```
+
+#Data Prep
+```{r}
+BreastCancer = na.omit(BreastCancer) 
+BreastCancer$Id = NULL 
+
+```
+
+
+```{r}
+head(BreastCancer)
+summary(BreastCancer)
+```
+
+#Create Training and Testing
+```{r}
+train.rows <- sample(rownames(BreastCancer), dim(BreastCancer)[1]*0.8)
+train <- BreastCancer[train.rows, ]
+testing.rows <- sample(setdiff(rownames(BreastCancer), train.rows))
+testing <- BreastCancer[testing.rows, ]
+```
+
+#Neural Network
+```{r}
+nn <- nnet(Class ~ ., train, size=1)
+
+```
+#Neural Network Predictions
+```{r}
+nn.pred <- predict(nn,testing,type="class")
+table(nn.pred,testing$Class)
+```
+
+
+#Naive Bayes
+```{r}
+nb <- naiveBayes(Class ~ ., train)
+
+```
+
+#Naive Bayes Predictions
+```{r}
+nb.pred <- predict(nb,testing)
+table(nb.pred,testing$Class)
+```
+
+
+#Decision trees
+```{r}
+library(rpart)
+dtree <- rpart(Class ~ ., train)
+summary(dtree)
+```
+#Decision Trees Prediction
+```{r}
+dtree.pred <- predict(dtree,testing,type="class")
+table(dtree.pred,testing$Class)
+```
+#Support Vector Machines
+```{r}
+svm <- svm(Class ~ ., train)
+
+```
+
+#Support vector machines Predictions
+```{r}
+svm.pred <- predict(svm, testing)
+table(svm.pred,testing$Class)
+```
+
+
+#Combine Results
+```{r}
+essenble <-cbind(nn.pred, nb.pred, dtree.pred, svm.pred)
+essenble
+#Benign = 1
+#Malignant = 2
+```
+
